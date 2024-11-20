@@ -1,0 +1,128 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  SEP
+  NHANVIEN
+  ADMIN
+}
+
+enum Status {
+  INACTIVE
+  ACTIVE
+  PENDING
+}
+
+model User {
+  id         Int       @id @default(autoincrement())
+  email      String    @unique @db.VarChar(255)
+  firstName  String?   @map("first_name") @db.VarChar(255)
+  lastName   String?   @map("last_name") @db.VarChar(255)
+  avatarUrl  String?   @map("avatar_url") @db.VarChar(255)
+  password   String    @db.VarChar(255)
+  dob        DateTime? @db.Date
+  role       Role
+  status     Status    @default(PENDING)
+  createdBy  String?   @map("created_by")
+  createdAt  DateTime  @default(now()) @map("created_at")
+  expiredAt  DateTime? @map("expired_at")
+  modifiedBy String?   @map("modified_by")
+  modifiedAt DateTime  @default(now()) @map("modified_at")
+  isDeleted  Boolean   @default(false) @map("is_deleted")
+  token      Token?
+  tasks      Task[]    @relation("UserTasks")
+  @@map("user")
+  UserProjectTask UserProjectTask[]
+}
+
+model Token {
+  id         Int     @unique @default(autoincrement())
+  user       User    @relation(fields: [userId], references: [id])
+  userId     Int     @unique @map("user_id")
+  refreshOtp String? @unique @map("refresh_otp")
+  resetOtp   String? @unique @map("reset_otp")
+
+  @@map("token")
+}
+model Project {
+  id            Int       @id @default(autoincrement())
+  name          String    @db.VarChar(255)
+  description   String?   @db.Text
+  status        Status    @default(PENDING)
+  createdBy     String?   @map("created_by")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  modifiedBy    String?   @map("modified_by")
+  modifiedAt    DateTime  @default(now()) @map("modified_at")
+  isDeleted     Boolean   @default(false) @map("is_deleted")
+  tasks         Task[]    @relation("ProjectTasks")
+
+  @@map("project")
+  ProjectTask ProjectTask[]
+  UserProjectTask UserProjectTask[]
+}
+
+model Task {
+  id            Int       @id @default(autoincrement())
+  title         String    @db.VarChar(255)
+  description   String?   @db.Text
+  status        Status    @default(PENDING)
+  priority      Int       @default(1)
+  dueDate       DateTime? @map("due_date")
+  projectId     Int
+  assignedTo    User?     @relation("UserTasks", fields: [userId], references: [id])
+  userId        Int?
+  createdBy     String?   @map("created_by")
+  createdAt     DateTime  @default(now()) @map("created_at")
+  modifiedBy    String?   @map("modified_by")
+  modifiedAt    DateTime  @default(now()) @map("modified_at")
+  isDeleted     Boolean   @default(false) @map("is_deleted")
+  project       Project   @relation("ProjectTasks", fields: [projectId], references: [id])
+  reports       Report[]  @relation("TaskReports") 
+  
+  @@map("task")
+  ProjectTask ProjectTask[]
+  UserProjectTask UserProjectTask[]
+}
+
+model Report {
+  id        Int      @id @default(autoincrement())
+  taskId    Int
+  task      Task     @relation("TaskReports", fields: [taskId], references: [id])
+  content   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("report")
+}
+model ProjectTask {
+  id         Int      @id @default(autoincrement())
+  projectId  Int
+  taskId     Int
+  project    Project  @relation(fields: [projectId], references: [id])
+  task       Task     @relation(fields: [taskId], references: [id])
+  createdAt  DateTime @default(now()) @map("created_at")
+  modifiedAt DateTime @default(now()) @map("modified_at")
+  
+  @@unique([projectId, taskId])
+  @@map("project_task")
+}
+model UserProjectTask {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  projectId  Int
+  taskId     Int
+  user       User     @relation(fields: [userId], references: [id])
+  project    Project  @relation(fields: [projectId], references: [id])
+  task       Task     @relation(fields: [taskId], references: [id])
+  createdAt  DateTime @default(now()) @map("created_at")
+  modifiedAt DateTime @default(now()) @map("modified_at")
+
+  @@unique([userId, projectId, taskId])
+  @@map("user_project_task")
+}

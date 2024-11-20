@@ -1,0 +1,92 @@
+{
+  "$schema": "https://json.schemastore.org/nest-cli",
+  "collection": "@nestjs/schematics",
+  "sourceRoot": "apps/lms/src",
+  "compilerOptions": {
+    "deleteOutDir": true,
+    "webpack": true,
+    "tsConfigPath": "apps/lms/tsconfig.app.json"
+  },
+  "monorepo": true,
+  "root": "apps/lms",
+  "projects": {
+    "lms": {
+      "type": "application",
+      "root": "apps/lms",
+      "entryFile": "main",
+      "sourceRoot": "apps/lms/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/lms/tsconfig.app.json"
+      }
+    },
+    "storage": {
+      "type": "application",
+      "root": "apps/storage",
+      "entryFile": "main",
+      "sourceRoot": "apps/storage/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/storage/tsconfig.app.json",
+        "assets": [
+          {
+            "include": "../config/*.yaml",
+            "watchAssets": true
+          }
+        ]
+      }
+    },
+    "aws-sdk": {
+      "type": "library",
+      "root": "libs/aws-sdk",
+      "entryFile": "index",
+      "sourceRoot": "libs/aws-sdk/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/aws-sdk/tsconfig.lib.json"
+      }
+    },
+    "security": {
+      "type": "library",
+      "root": "libs/security",
+      "entryFile": "index",
+      "sourceRoot": "libs/security/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/security/tsconfig.lib.json"
+      }
+    },
+    "notification": {
+      "type": "application",
+      "root": "apps/notification",
+      "entryFile": "main",
+      "sourceRoot": "apps/notification/src",
+      "compilerOptions": {
+        "tsConfigPath": "apps/notification/tsconfig.app.json"
+      }
+    },
+    "http-client": {
+      "type": "library",
+      "root": "libs/http-client",
+      "entryFile": "index",
+      "sourceRoot": "libs/http-client/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/http-client/tsconfig.lib.json"
+      }
+    },
+    "notification-libs": {
+      "type": "library",
+      "root": "libs/notification-libs",
+      "entryFile": "index",
+      "sourceRoot": "libs/notification-libs/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/notification-libs/tsconfig.lib.json"
+      }
+    },
+    "db-client": {
+      "type": "library",
+      "root": "libs/db-client",
+      "entryFile": "index",
+      "sourceRoot": "libs/db-client/src",
+      "compilerOptions": {
+        "tsConfigPath": "libs/db-client/tsconfig.lib.json"
+      }
+    }
+  }
+}

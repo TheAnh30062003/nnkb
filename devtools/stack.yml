@@ -1,0 +1,72 @@
+version: "3.8"
+
+services:
+  postgresql:
+    image: postgres:12.6
+    ports:
+      - "5432:5432"
+    volumes:
+      - "cubone_postgres:/var/lib/postgresql/data"
+    environment:
+      - PGDATA=/var/lib/postgresql/data/pgdata
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=cubone
+    networks:
+      - cubone-network
+
+#  zookeeper:
+#    image: docker.io/bitnami/zookeeper:latest
+#    ports:
+#      - "2181:2181"
+#    volumes:
+#      - "cubone_zookeeper:/bitnami"
+#    environment:
+#      - ALLOW_ANONYMOUS_LOGIN=yes
+#    networks:
+#      - cubone-network
+
+#  kafka:
+#    image: docker.io/bitnami/kafka:latest
+#    ports:
+#      - "9092:9092"
+#      - "9093:9093"
+#    volumes:
+#      - "cubone_kafka:/bitnami"
+#    environment:
+#      - KAFKA_CFG_ZOOKEEPER_CONNECT=zookeeper:2181
+#      - ALLOW_PLAINTEXT_LISTENER=yes
+#      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CLIENT:PLAINTEXT,EXTERNAL:PLAINTEXT
+#      - KAFKA_CFG_LISTENERS=CLIENT://:9092,EXTERNAL://:9093
+#      - KAFKA_CFG_ADVERTISED_LISTENERS=CLIENT://kafka:9092,EXTERNAL://localhost:9093
+#      - KAFKA_INTER_BROKER_LISTENER_NAME=CLIENT
+#    depends_on:
+#      - zookeeper
+#    networks:
+#      - cubone-network
+
+#  kafka-ui:
+#    container_name: kafka-ui
+#    image: provectuslabs/kafka-ui:latest
+#    ports:
+#      - 8080:8080
+#    depends_on:
+#      - kafka
+#    environment:
+#      DYNAMIC_CONFIG_ENABLED: 'true'  # not necessary, added for tests
+#      kafka.clusters.0.name: localhost
+#      kafka.clusters.0.bootstrapservers: kafka:9092
+#      kafka.clusters.0.consoleauditenabled: 'true'
+#    networks:
+#      - cubone-network
+
+networks:
+  cubone-network:
+    name: cubone-network
+
+volumes:
+  cubone_postgres:
+    driver: local
+  cubone_kafka:
+    driver: local
+  cubone_zookeeper:
+    driver: local

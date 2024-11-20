@@ -1,0 +1,12 @@
+{
+  "extends": "../../tsconfig.json", // Adjust the path as necessary
+  "compilerOptions": {
+    "outDir": "../../dist/apps/lms", // Adjust the output directory as necessary
+    "baseUrl": "./",
+    "module": "commonjs",
+    "declaration": true,
+    "sourceMap": true
+  },
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
+}
