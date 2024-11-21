@@ -16,18 +16,22 @@ import {
     constructor(private prisma: PrismaService) {}
   
     // Tạo mới Project
-    async createProject(data: CreateProjectDto): Promise<any> {
+    async createProject(data: CreateProjectDto, creatorEmail: string): Promise<any> {
       try {
         const project = await this.prisma.project.create({
-          data,
+          data: {
+            name: data.name,
+            description: data.description,
+            createdBy: creatorEmail || data.createdBy,
+          },
         });
+  
         return project;
       } catch (error) {
         console.error("Error creating project:", error);
         throw new ConflictException("Could not create project");
       }
     }
-  
     // Lấy thông tin Project theo ID
     async getProjectById(id: number): Promise<any> {
       try {

@@ -16,19 +16,15 @@ import {
     [x: string]: any;
     constructor(private prisma: PrismaService) {}
   
-    async createTask(data: CreateTaskDto): Promise<any> {
+    async createTask(data: CreateTaskDto, creatorEmail: string): Promise<any> {
       try {
         let dueDateISO = null;
     
         if (data.dueDate) {
-          const dueDateParsed = parse(data.dueDate, 'dd/MM/yyyy', new Date());
-    
-          // Kiểm tra tính hợp lệ của dueDateParsed
+          const dueDateParsed = parse(data.dueDate, "dd/MM/yyyy", new Date());
           if (!isValid(dueDateParsed)) {
             throw new ConflictException("Invalid due date format. Please use dd/MM/yyyy.");
           }
-    
-          // Chuyển đổi sang UTC mà không bị lệch ngày
           const dueDateUTC = new Date(dueDateParsed);
           dueDateISO = formatISO(dueDateUTC);
         }
@@ -40,6 +36,7 @@ import {
           project: { connect: { id: data.projectId } },
           status: data.status,
           priority: data.priority,
+          createdBy: creatorEmail, // Lưu email người tạo
         };
     
         const task = await this.prisma.task.create({ data: taskData });
