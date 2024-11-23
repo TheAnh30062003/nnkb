@@ -54,7 +54,7 @@ import {
       try {
         const task = await this.prisma.task.findUnique({
           where: { id },
-          include: { assignedTo: true, project: true, reports: true },
+          include: { assignedTo: true, project: true },
         });
   
         if (!task) {
@@ -106,7 +106,7 @@ import {
         where,
         skip: (pageNumber - 1) * pageSize,
         take: pageSize,
-        include: { assignedTo: true, project: true, reports: true },
+        include: { assignedTo: true, project: true },
       });
   
       return {

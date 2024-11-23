@@ -98,7 +98,8 @@ model ProjectTask {
   task       Task     @relation(fields: [taskId], references: [id])
   createdAt  DateTime @default(now()) @map("created_at")
   modifiedAt DateTime @default(now()) @map("modified_at")
-  
+  isDeleted  Boolean  @default(false)
+
   @@unique([projectId, taskId])
   @@map("project_task")
 }
@@ -112,7 +113,8 @@ model UserProjectTask {
   task       Task     @relation(fields: [taskId], references: [id])
   createdAt  DateTime @default(now()) @map("created_at")
   modifiedAt DateTime @default(now()) @map("modified_at")
-
+  isDeleted  Boolean  @default(false)
+  
   @@unique([userId, projectId, taskId])
   @@map("user_project_task")
 }
