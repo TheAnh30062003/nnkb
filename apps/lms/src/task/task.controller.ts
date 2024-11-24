@@ -9,6 +9,7 @@ import {
     Query,
     Req,
     ParseIntPipe,
+    UseGuards,
   } from "@nestjs/common";
   import { TaskService } from "./task.service";
   import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
@@ -19,6 +20,7 @@ import {
   import { UpdateTaskDto } from "./dto/UpdateTask.dto";
   import { GetTaskDto } from "./dto/GetTask.dto";
   import { DeleteTaskDto } from "./dto/DeleteTask.dto";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
   
   @ApiBearerAuth("JWT-auth")
   @ApiTags("Tasks")
@@ -29,11 +31,12 @@ import {
   
     // Tạo mới Task
     @Roles(UserRoles.ADMIN, UserRoles.SEP)
+    @UseGuards(JwtAuthGuard)
     @Post()
-    createTask(@Body() createTaskDto: CreateTaskDto) {
-      return this.taskService.createTask(createTaskDto);
+    async createTask(@Body() createTaskDto: CreateTaskDto, @Req() req: any) {
+      const creatorEmail = req.user?.email; // Lấy email từ token
+      return this.taskService.createTask(createTaskDto, creatorEmail);
     }
-  
     // Lấy thông tin Task theo ID
     @Get(":id")
     getTaskById(@Param("id", ParseIntPipe) id: number) {

@@ -9,6 +9,7 @@ import {
     Query,
     Req,
     ParseIntPipe,
+    UseGuards,
   } from "@nestjs/common";
   import { ProjectService } from "./project.service";
   import { ApiBearerAuth, ApiTags } from "@nestjs/swagger";
@@ -20,19 +21,23 @@ import {
   import { GetProjectsDto } from "./dto/GetProjects.dto";
   import { DeleteProjectDto } from "./dto/DeleteProjectdto";
   import { UserRoles, UserStatus } from "../user/user.types";
+import { CreateTaskDto } from "../task/dto/CreateTask.dto";
+import { JwtAuthGuard } from "../auth/jwt-auth.guard";
   
   @ApiBearerAuth("JWT-auth")
   @ApiTags("Projects")
   @Controller("projects")
   @StatusRoles(UserStatus.ACTIVE)
   export class ProjectController {
+    [x: string]: any;
     constructor(private readonly projectService: ProjectService) {}
     @Roles(UserRoles.ADMIN, UserRoles.SEP)
-    @Post()
-    createProject(@Body() createProjectDto: CreateProjectDto) {
-      return this.projectService.createProject(createProjectDto);
-    }
-  
+    @UseGuards(JwtAuthGuard)
+  @Post()
+  async createProject(@Body() createProjectDto: CreateProjectDto, @Req() req: any) {
+    const creatorEmail = req.user?.email; // Lấy email từ token
+    return this.projectService.createProject(createProjectDto, creatorEmail);
+  }
     @Get(":id")
     getProjectById(@Param("id", ParseIntPipe) id: number) {
       return this.projectService.getProjectById(id);

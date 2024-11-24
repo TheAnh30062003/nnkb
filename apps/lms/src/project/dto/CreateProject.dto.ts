@@ -3,6 +3,7 @@ import { IsNotEmpty, IsOptional, IsEnum } from "class-validator";
 import { Status } from "@prisma/client";
 
 export class CreateProjectDto {
+  [x: string]: string;
   @ApiProperty({ description: "Project name", default: "New Project" })
   @IsNotEmpty()
   readonly name: string;

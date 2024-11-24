@@ -83,23 +83,13 @@ model Task {
   modifiedAt    DateTime  @default(now()) @map("modified_at")
   isDeleted     Boolean   @default(false) @map("is_deleted")
   project       Project   @relation("ProjectTasks", fields: [projectId], references: [id])
-  reports       Report[]  @relation("TaskReports") 
-  
+
   @@map("task")
   ProjectTask ProjectTask[]
   UserProjectTask UserProjectTask[]
 }
 
-model Report {
-  id        Int      @id @default(autoincrement())
-  taskId    Int
-  task      Task     @relation("TaskReports", fields: [taskId], references: [id])
-  content   String
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
 
-  @@map("report")
-}
 model ProjectTask {
   id         Int      @id @default(autoincrement())
   projectId  Int
@@ -108,7 +98,8 @@ model ProjectTask {
   task       Task     @relation(fields: [taskId], references: [id])
   createdAt  DateTime @default(now()) @map("created_at")
   modifiedAt DateTime @default(now()) @map("modified_at")
-  
+  isDeleted  Boolean  @default(false)
+
   @@unique([projectId, taskId])
   @@map("project_task")
 }
@@ -122,7 +113,8 @@ model UserProjectTask {
   task       Task     @relation(fields: [taskId], references: [id])
   createdAt  DateTime @default(now()) @map("created_at")
   modifiedAt DateTime @default(now()) @map("modified_at")
-
+  isDeleted  Boolean  @default(false)
+  
   @@unique([userId, projectId, taskId])
   @@map("user_project_task")
 }

@@ -8,6 +8,7 @@ import { PrismaModule } from "./prisma/prisma.module";
 import { StatusRolesGuard } from "./role/status.guard";
 import { ProjectModule } from './project/project.module';
 import { TaskModule } from './task/task.module';
+import { ProjectTaskModule } from "./project/project-task/project-task.module";
 
 
 @Module({
@@ -20,6 +21,7 @@ import { TaskModule } from './task/task.module';
     PrismaModule,
     ProjectModule,
     TaskModule,
+    ProjectTaskModule
   ],
   providers: [
     {
